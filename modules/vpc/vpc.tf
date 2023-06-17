@@ -138,7 +138,7 @@ resource "aws_route_table" "devPrivateRT1" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.devNatGateway1
+    gateway_id = aws_nat_gateway.devNatGateway1.id
   }
 
   tags = {
@@ -154,7 +154,7 @@ resource "aws_route_table" "devPrivateRT2" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.devNatGateway2
+    gateway_id = aws_nat_gateway.devNatGateway2.id
   }
 
   tags = {
