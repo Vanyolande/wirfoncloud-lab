@@ -11,7 +11,7 @@ resource "aws_vpc" "devvpc" {
 
 #Internet Gateway
 resource "aws_internet_gateway" "devIGW" {
-  vpc_id = aws_vpc.devvpc
+  vpc_id = aws_vpc.devvpc.id
 
   tags = {
     Name = "devIGW"
@@ -41,6 +41,8 @@ resource "aws_nat_gateway" "devNatGateway1"{
   }
 }
 
+
+
 #Public Subnet 1
 resource "aws_subnet" "devPublicSubnet1" {
   vpc_id     = aws_vpc.devvpc.id
@@ -53,6 +55,18 @@ resource "aws_subnet" "devPublicSubnet1" {
   }
 }
 
+
+#Public Subnet 2
+resource "aws_subnet" "devPublicSubnet2" {
+  vpc_id     = aws_vpc.devvpc.id
+  cidr_block = var.public_subnets_cidrs[1] 
+  availability_zone = var.availability_zones[1]
+
+  tags = {
+    Name = "devPublicSubnet2"
+    Project = "Yolanda Terraform Project"
+  }
+}
 
 #Elatic IP 2
 resource "aws_eip" "devNateGatewayEIP2" {
@@ -79,8 +93,8 @@ resource "aws_nat_gateway" "devNatGateway2"{
 #Private subnet1
 resource "aws_subnet" "devPrivateSubnet1" {
   vpc_id     = aws_vpc.devvpc.id
-  cidr_block = var.private_subnets_cidrs[1] 
-  availability_zone = var.availability_zones[1]
+  cidr_block = var.private_subnets_cidrs[0] 
+  availability_zone = var.availability_zones[0]
 
   tags = {
     Name = "devPublicSubnet1"
@@ -111,13 +125,11 @@ resource "aws_route_table" "devPublicRT" {
     gateway_id = aws_internet_gateway.devIGW.id
   }
 
-  }
-
   tags = {
     Name = "devPublicRT"
     Project = "Yolanda Terraform Demo"
   }
-
+}
 
 
 #private route table 1
@@ -129,12 +141,11 @@ resource "aws_route_table" "devPrivateRT1" {
     gateway_id = aws_nat_gateway.devNatGateway1
   }
 
-  }
-
-  Tags = {
+  tags = {
     Name = "devPrivateRT1"
     Project = "Yolanda Terraform Demo"
   }
+}
 
 
 #private route table 2
@@ -146,12 +157,12 @@ resource "aws_route_table" "devPrivateRT2" {
     gateway_id = aws_nat_gateway.devNatGateway2
   }
 
-  }
-
-  Tags = {
+  tags = {
     Name = "devPrivateRT2"
     Project = "Yolanda Terraform Demo"
   }
+}
+  
 
 
 
