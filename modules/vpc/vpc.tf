@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "devIGW" {
 }
 
 
-#Elastic IP
+#Elastic IP1
 resource "aws_eip" "devNateGatewayEIP1" {
 
   tags  = {
@@ -42,8 +42,7 @@ resource "aws_nat_gateway" "devNatGateway1"{
 }
 
 
-
-#Public Subnet 1
+#Public Subnet1
 resource "aws_subnet" "devPublicSubnet1" {
   vpc_id     = aws_vpc.devvpc.id
   cidr_block = var.public_subnets_cidrs[0] 
@@ -56,7 +55,7 @@ resource "aws_subnet" "devPublicSubnet1" {
 }
 
 
-#Public Subnet 2
+#Public Subnet2
 resource "aws_subnet" "devPublicSubnet2" {
   vpc_id     = aws_vpc.devvpc.id
   cidr_block = var.public_subnets_cidrs[1] 
@@ -68,7 +67,7 @@ resource "aws_subnet" "devPublicSubnet2" {
   }
 }
 
-#Elatic IP 2
+#Elastic IP2
 resource "aws_eip" "devNateGatewayEIP2" {
 
   tags  = {
@@ -132,7 +131,7 @@ resource "aws_route_table" "devPublicRT" {
 }
 
 
-#private route table 1
+#private route table1
 resource "aws_route_table" "devPrivateRT1" {
   vpc_id = aws_vpc.devvpc.id
 
@@ -148,7 +147,7 @@ resource "aws_route_table" "devPrivateRT1" {
 }
 
 
-#private route table 2
+#private route table2
 resource "aws_route_table" "devPrivateRT2" {
   vpc_id = aws_vpc.devvpc.id
 
@@ -164,30 +163,28 @@ resource "aws_route_table" "devPrivateRT2" {
 }
   
 
-
-
-# route table association public subnet 1
+# route table association public subnet1
 resource "aws_route_table_association" "devPublicSubnet1" {
   subnet_id      = aws_subnet.devPublicSubnet1.id
   route_table_id = aws_route_table.devPublicRT.id
 }
 
 
-# route table association public subnet 2
+# route table association public subnet2
 resource "aws_route_table_association" "devPublicSubnet2" {
   subnet_id      = aws_subnet.devPublicSubnet2.id
   route_table_id = aws_route_table.devPublicRT.id
 }
 
 
- #route table association private subnet 1
+ #route table association private subnet1
 resource "aws_route_table_association" "devPrivateSubnet1" {
   subnet_id      = aws_subnet.devPrivateSubnet1.id
   route_table_id = aws_route_table.devPrivateRT1.id
 }
 
 
-# route table association private subnet 2
+# route table association private subnet2
 resource "aws_route_table_association" "devPrivateSubnet2" {
   subnet_id      = aws_subnet.devPrivateSubnet2.id
   route_table_id = aws_route_table.devPrivateRT2.id
