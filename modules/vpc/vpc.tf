@@ -1,3 +1,4 @@
+#create vpc
 resource "aws_vpc" "devvpc" {
   cidr_block       = var.vpc_cidr
   instance_tenancy = "default"
@@ -8,7 +9,7 @@ resource "aws_vpc" "devvpc" {
   }
 }
 
-
+#Internet Gateway
 resource "aws_internet_gateway" "devIGW" {
   vpc_id = aws_vpc.devvpc
 
@@ -19,6 +20,7 @@ resource "aws_internet_gateway" "devIGW" {
 }
 
 
+#Elastic IP
 resource "aws_eip" "devNateGatewayEIP1" {
 
   tags  = {
@@ -28,6 +30,7 @@ resource "aws_eip" "devNateGatewayEIP1" {
 }
 
 
+#Nat Gateway1
 resource "aws_nat_gateway" "devNatGateway1"{
   allocation_id = aws_eip.devNateGatewayEIP1.id
   subnet_id     = aws_subnet.devPublicSubnet1.id
@@ -38,7 +41,7 @@ resource "aws_nat_gateway" "devNatGateway1"{
   }
 }
 
-
+#Public Subnet 1
 resource "aws_subnet" "devPublicSubnet1" {
   vpc_id     = aws_vpc.devvpc.id
   cidr_block = var.public_subnets_cidrs[0] 
@@ -51,6 +54,7 @@ resource "aws_subnet" "devPublicSubnet1" {
 }
 
 
+#Elatic IP 2
 resource "aws_eip" "devNateGatewayEIP2" {
 
   tags  = {
@@ -60,6 +64,7 @@ resource "aws_eip" "devNateGatewayEIP2" {
 }
 
 
+#Nat Gateway2
 resource "aws_nat_gateway" "devNatGateway2"{
   allocation_id = aws_eip.devNateGatewayEIP2.id
   subnet_id     = aws_subnet.devPublicSubnet2.id
@@ -71,6 +76,7 @@ resource "aws_nat_gateway" "devNatGateway2"{
 }
 
 
+#Private subnet1
 resource "aws_subnet" "devPrivateSubnet1" {
   vpc_id     = aws_vpc.devvpc.id
   cidr_block = var.private_subnets_cidrs[1] 
@@ -83,6 +89,7 @@ resource "aws_subnet" "devPrivateSubnet1" {
 }
 
 
+#Private subnet2
 resource "aws_subnet" "devPrivateSubnet2" {
   vpc_id     = aws_vpc.devvpc.id
   cidr_block = var.private_subnets_cidrs[1] 
@@ -95,6 +102,7 @@ resource "aws_subnet" "devPrivateSubnet2" {
 }
 
 
+#public route tabe 
 resource "aws_route_table" "devPublicRT" {
   vpc_id = aws_vpc.devvpc.id
 
@@ -102,7 +110,6 @@ resource "aws_route_table" "devPublicRT" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.devIGW.id
   }
-
 
   }
 
@@ -113,7 +120,8 @@ resource "aws_route_table" "devPublicRT" {
 
 
 
-resource "aws_route_table" "devPrivateRT" {
+#private route table 1
+resource "aws_route_table" "devPrivateRT1" {
   vpc_id = aws_vpc.devvpc.id
 
   route {
@@ -121,13 +129,55 @@ resource "aws_route_table" "devPrivateRT" {
     gateway_id = aws_nat_gateway.devNatGateway1
   }
 
+  }
+
+  Tags = {
+    Name = "devPrivateRT1"
+    Project = "Yolanda Terraform Demo"
+  }
+
+
+#private route table 2
+resource "aws_route_table" "devPrivateRT2" {
+  vpc_id = aws_vpc.devvpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.devNatGateway2
+  }
 
   }
 
   Tags = {
-    Name = "devPrivateRT"
+    Name = "devPrivateRT2"
     Project = "Yolanda Terraform Demo"
   }
 
 
 
+# route table association public subnet 1
+resource "aws_route_table_association" "devPublicSubnet1" {
+  subnet_id      = aws_subnet.devPublicSubnet1.id
+  route_table_id = aws_route_table.devPublicRT.id
+}
+
+
+# route table association public subnet 2
+resource "aws_route_table_association" "devPublicSubnet2" {
+  subnet_id      = aws_subnet.devPublicSubnet2.id
+  route_table_id = aws_route_table.devPublicRT.id
+}
+
+
+ #route table association private subnet 1
+resource "aws_route_table_association" "devPrivateSubnet1" {
+  subnet_id      = aws_subnet.devPrivateSubnet1.id
+  route_table_id = aws_route_table.devPrivateRT1.id
+}
+
+
+# route table association private subnet 2
+resource "aws_route_table_association" "devPrivateSubnet2" {
+  subnet_id      = aws_subnet.devPrivateSubnet2.id
+  route_table_id = aws_route_table.devPrivateRT2.id
+}
