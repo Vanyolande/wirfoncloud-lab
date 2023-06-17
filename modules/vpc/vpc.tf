@@ -97,7 +97,7 @@ resource "aws_subnet" "devPrivateSubnet1" {
   availability_zone = var.availability_zones[0]
 
   tags = {
-    Name = "devPublicSubnet1"
+    Name = "devPrivateSubnet1"
     Project = "Yolanda Terraform Project"
   }
 }
@@ -110,7 +110,7 @@ resource "aws_subnet" "devPrivateSubnet2" {
   availability_zone = var.availability_zones[1]
 
   tags = {
-    Name = "devPublicSubnet2"
+    Name = "devPrivateSubnet2"
     Project = "Yolanda Terraform Project"
   }
 }
